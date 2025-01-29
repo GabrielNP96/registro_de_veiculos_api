@@ -1,20 +1,21 @@
 import mongoose from "mongoose";
-import { configDotenv } from "dotenv";
+import dotenv from 'dotenv';
+dotenv.config();
 
-const connectDb = async () => {
+
+const connectDB = async () => {
     try {
-     
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-
-        console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
+      const uri = process.env.MONGO_URI;
+      if (!uri) {
+        console.error('Erro: URI do MongoDB não encontrada.');
         process.exit(1);
-} catch(error) {
-    console.error('❌ Erro ao conectar ao MongoDB:', error);
-    process.exit(1);
-}
-}
-
-export default connectDb;
+      }
+      await mongoose.connect(uri);
+      console.log('MongoDB Connected');
+    } catch (error) {
+      console.error('❌ Erro ao conectar ao MongoDB:', error.message);
+      process.exit(1);
+    }
+  };
+  
+  export default connectDB;
